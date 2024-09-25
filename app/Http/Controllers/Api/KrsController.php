@@ -9,6 +9,7 @@ use App\Models\Krs;
 use App\Models\User;
 use App\Models\Mahasiswa;
 use App\Models\Perwalian;
+use App\Models\MahasiswaPT;
 use App\Models\KelasKuliah;
 use App\Models\JadwalKuliah;
 use App\Models\KrsTransaction;
@@ -38,7 +39,7 @@ class KrsController extends Controller
                 return ResponseFormater::success(204);
             }
 
-            $userId = Mahasiswa::where('nim', $request->nim)->first();
+            $userId = MahasiswaPT::where('nim', $request->nim)->first();
 
             $getWali = Perwalian::where('student_pt_id', $userId->id)
                 ->where('status', 1)
@@ -77,6 +78,8 @@ class KrsController extends Controller
                 return ResponseFormater::success(204);
             }
 
+            $userId = MahasiswaPT::where('nim', $request->nim)->first();
+
             foreach ($request->krs_id as $data) {
                 $cekJadwal = JadwalKuliah::find($data);
                 if (!$cekJadwal) {
@@ -84,7 +87,7 @@ class KrsController extends Controller
                 }
 
                 $update = Krs::where('course_schedule_id', $data)
-                    ->where('student_id', $request->nim)
+                    ->where('student_pt_id', $userId->id)
                     ->where('status', 0)
                     ->first();
                 $update->status = 1;
@@ -110,9 +113,9 @@ class KrsController extends Controller
             return ResponseFormater::success(204);
         }
 
-        $userId = Mahasiswa::where('nim', $nim)->first();
+        $userId = MahasiswaPT::where('nim', $nim)->first();
 
-        $krs = Krs::where('student_id', $userId->id)
+        $krs = Krs::where('student_pt_id', $userId->id)
             ->where('status', 0)
             ->get();
         if ($krs->isEmpty()) {
@@ -158,7 +161,7 @@ class KrsController extends Controller
                 return ResponseFormater::success(204);
             }
 
-            $userId = Mahasiswa::where('nim', $nim)->first();
+            $userId = MahasiswaPT::where('nim', $request->nim)->first();
 
             $cekDosen = Utils::checkUser($request->lecture_id);
             if (!$cekDosen) {
@@ -172,7 +175,7 @@ class KrsController extends Controller
                 }
 
                 $update = Krs::where('course_schedule_id', $data)
-                    ->where('student_id', $request->nim)
+                    ->where('student_id', $userId->id)
                     ->where('status', 1)
                     ->first();
                 $update->status = 2;
@@ -182,12 +185,12 @@ class KrsController extends Controller
 
                 $insertKelas = new KelasKuliah();
                 $insertKelas->course_id = $cekJadwal->id;
-                $insertKelas->student_id = $userId->id;
+                $insertKelas->student_pt_id = $userId->id;
                 $insertKelas->save();
             }
 
             $insert = new KrsTransaction();
-            $insert->student_id = $userId->id;
+            $insert->student_pt_id = $userId->id;
             $insert->status = 0;
             $insert->save();
 
@@ -205,12 +208,12 @@ class KrsController extends Controller
 
     public function accNim($nim)
     {
-        $cekNim = Utils::checkUser($request->nim);
+        $cekNim = Utils::checkUser($nim);
         if (!$cekNim) {
             return ResponseFormater::success(204);
         }
 
-        $userId = Mahasiswa::where('nim', $nim)->first();
+        $userId = MahasiswaPT::where('nim', $nim)->first();
         $prodi = MappingMahasiswa::where('student_pt_id', $userId->id)->first();
 
         $data = Krs::where('student_pt_id', $userId->id)->where('status', 2);
@@ -263,10 +266,10 @@ class KrsController extends Controller
                 return ResponseFormater::success(204);
             }
 
-            $userId = Mahasiswa::where('nim', $nim)->first();
+            $userId = MahasiswaPT::where('nim', $request->nim)->first();
 
             $update = KrsTransaction::where('id', $request->krs_transaction_id)
-                ->where('student_id', $userId->id)
+                ->where('student+pt_id', $userId->id)
                 ->where('status', 0)
                 ->first();
             $update->price = $request->price;

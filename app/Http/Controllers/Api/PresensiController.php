@@ -9,8 +9,10 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Models\Krs;
 use App\Models\Presensi;
 use App\Models\Mahasiswa;
+use App\Models\MahasiswaPT;
 use App\Models\JadwalKuliah;
 use App\Models\HistoryAttendance;
+use App\Models\HistoryAttendanceLecture;
 use App\Utils;
 use App\ResponseFormater;
 
@@ -51,6 +53,11 @@ class PresensiController extends Controller
             $insert->code = $code;
             $insert->save();
 
+            $presensi_dosen = new HistoryAttendanceLecture();
+            $presensi_dosen->schedule_id = $findDetail->schedule_id;
+            $presensi_dosen->lecture_id = $request->schedule_id;
+            $presensi_dosen->presensi_at = date('Y-m-d h:i:s');
+
             array_push($data, ['qr' => base64_encode($qrCodeImage), 'expired_time' => date('Y-m-d H:i:s', $end), 'code' => $code]);
 
             DB::commit();
@@ -88,9 +95,11 @@ class PresensiController extends Controller
                 return ResponseFormater::success(204);
             }
 
+            $userId = MahasiswaPT::where('nim', $request->nim)->first();
+
             $insert = new HistoryAttendance();
             $insert->schedule_id = $findDetail->schedule_id;
-            $insert->student_id = $cekNim->id;
+            $insert->student_pt_id = $userId->id;
             $insert->presensi_at = date('Y-m-d h:i:s');
             $insert->save();
 
@@ -117,7 +126,7 @@ class PresensiController extends Controller
 
         $data = [];
         foreach($histories as $history) {
-            $mahasiswa = Mahasiswa::find($history->student_id);
+            $mahasiswa = Mahasiswa::find($history->student_pt_id);
             array_push($data, ['nim' => $mahasiswa->nim, 'name' => $mahasiswa->name]);
         }
 
@@ -126,16 +135,16 @@ class PresensiController extends Controller
 
     public function historyByNim($id)
     {
-        $userId = Mahasiswa::where('nim', $nim)->first();
+        $userId = MahasiswaPT::where('nim', $id)->first();
         // Krs
-        $histories = HistoryAttendance::where('schedule_id', $userId->id)->get();
+        $histories = HistoryAttendance::where('student_pt_id', $userId->id)->get();
         if($histories->isEmpty()){
             return ResponseFormater::success(204);
         }
 
         $data = [];
         foreach($histories as $history) {
-            $mahasiswa = Mahasiswa::find($history->student_id);
+            $mahasiswa = Mahasiswa::find($history->student_pt_id);
             array_push($data, ['nim' => $mahasiswa->nim, 'name' => $mahasiswa->name]);
         }
     }
