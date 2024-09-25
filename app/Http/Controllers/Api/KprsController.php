@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Krs;
 use App\Models\User;
 use App\Models\Perwalian;
+use App\Models\MahasiswaPT;
 use App\Models\JadwalKuliah;
 use App\Models\KrsTransaction;
 use App\Models\MappingMahasiswa;
@@ -36,15 +37,15 @@ class KprsController extends Controller
                 return ResponseFormater::success(204);
             }
 
-            $userId = Mahasiswa::where('nim', $request->nim)->first();
+            $userId = MahasiswaPT::where('nim', $request->nim)->first();
 
-            $getWali = Perwalian::where('student_id', $userId->id)
+            $getWali = Perwalian::where('student_pt_id', $userId->id)
                 ->where('status', 1)
                 ->first();
 
             $insert = new Krs();
             $insert->course_schedule_id = $request->krs_id;
-            $insert->student_id = $userId->id;
+            $insert->student_id_id = $userId->id;
             $insert->lecturer_id = $getWali->lecture_id;
             $insert->status = 0;
             $insert->save();
@@ -81,8 +82,10 @@ class KprsController extends Controller
                     return ResponseFormater::success(204);
                 }
 
+                $userId = MahasiswaPT::where('nim', $request->nim)->first();
+
                 $update = Krs::where('course_schedule_id', $data)
-                    ->where('student_id', $request->nim)
+                    ->where('student_pt_id', $userId->id)
                     ->where('status', 0)
                     ->first();
                 $update->status = 1;
@@ -108,9 +111,9 @@ class KprsController extends Controller
             return ResponseFormater::success(204);
         }
 
-        $userId = Mahasiswa::where('nim', $nim)->first();
+        $userId = MahasiswaPT::where('nim', $nim)->first();
 
-        $krs = Krs::where('student_id', $userId->id)
+        $krs = Krs::where('student_pt_id', $userId->id)
             ->where('status', 0)
             ->get();
         if ($krs->isEmpty()) {
@@ -156,7 +159,7 @@ class KprsController extends Controller
                 return ResponseFormater::success(204);
             }
 
-            $userId = Mahasiswa::where('nim', $nim)->first();
+            $userId = MahasiswaPT::where('nim', $nim)->first();
 
             $cekDosen = Utils::checkUser($request->lecture_id);
             if (!$cekDosen) {
@@ -170,7 +173,7 @@ class KprsController extends Controller
                 }
 
                 $update = Krs::where('course_schedule_id', $data)
-                    ->where('student_id', $request->nim)
+                    ->where('student_pt_id', $userId->id)
                     ->where('status', 1)
                     ->first();
                 $update->status = 2;
@@ -180,7 +183,7 @@ class KprsController extends Controller
             }
             
             $insert = new KrsTransaction();
-            $insert->student_id = $userId->id;
+            $insert->student_pt_id = $userId->id;
             $insert->status = 0;
             $insert->save();
 
@@ -203,17 +206,17 @@ class KprsController extends Controller
             return ResponseFormater::success(204);
         }
 
-        $userId = Mahasiswa::where('nim', $nim)->first();
-        $prodi = MappingMahasiswa::where('student_id', $userId->id)->first();
+        $userId = MahasiswaPT::where('nim', $nim)->first();
+        $prodi = MappingMahasiswa::where('student_pt_id', $userId->id)->first();
 
-        $data = Krs::where('student_id', $userId->id)->where('status', 2);
+        $data = Krs::where('student_pt_id', $userId->id)->where('status', 2);
         $jumlahSks = $data->sum('sks');
         $krs = $data->get();
         if ($krs->isEmpty()) {
             return ResponseFormater::success(204);
         }
 
-        $getWali = Perwalian::where('student_id', $userId->id)
+        $getWali = Perwalian::where('student_pt_id', $userId->id)
             ->where('status', 1)
             ->first();
 

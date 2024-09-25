@@ -34,7 +34,7 @@ class ProdiController extends Controller
         try{
             request()->validate([
                 'name' => ['required', 'string'],
-                'faculty_id' => ['required', 'integer'],
+                'faculty_id' => ['required', 'integer'], // tidak required
                 'code' => ['required', 'string'],
                 'status' => ['required', 'boolean'],
                 'master_of_education_id' => ['required', 'integer'],

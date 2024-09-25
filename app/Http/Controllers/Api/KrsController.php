@@ -40,13 +40,13 @@ class KrsController extends Controller
 
             $userId = Mahasiswa::where('nim', $request->nim)->first();
 
-            $getWali = Perwalian::where('student_id', $userId->id)
+            $getWali = Perwalian::where('student_pt_id', $userId->id)
                 ->where('status', 1)
                 ->first();
 
             $insert = new Krs();
             $insert->course_schedule_id = $request->krs_id;
-            $insert->student_id = $userId->id;
+            $insert->student_pt_id = $userId->id;
             $insert->lecturer_id = $getWali->lecture_id;
             $insert->status = 0;
             $insert->save();
@@ -211,16 +211,16 @@ class KrsController extends Controller
         }
 
         $userId = Mahasiswa::where('nim', $nim)->first();
-        $prodi = MappingMahasiswa::where('student_id', $userId->id)->first();
+        $prodi = MappingMahasiswa::where('student_pt_id', $userId->id)->first();
 
-        $data = Krs::where('student_id', $userId->id)->where('status', 2);
+        $data = Krs::where('student_pt_id', $userId->id)->where('status', 2);
         $jumlahSks = $data->sum('sks');
         $krs = $data->get();
         if ($krs->isEmpty()) {
             return ResponseFormater::success(204);
         }
 
-        $getWali = Perwalian::where('student_id', $userId->id)
+        $getWali = Perwalian::where('student_pt_id', $userId->id)
             ->where('status', 1)
             ->first();
 

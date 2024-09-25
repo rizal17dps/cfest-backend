@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('krs_transaction', function (Blueprint $table) {
             $table->id();
-            $table->integer('student_id');
+            $table->integer('student_pt_id');
             $table->string('invoice_number')->nullable();
             $table->string('method');
             $table->integer('price');

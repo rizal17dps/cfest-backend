@@ -34,12 +34,12 @@ class PerwalianController extends Controller
         try{
             request()->validate([
                 'lecture_id' => ['required', 'integer'],
-                'student_id' => ['required', 'integer'],
+                'student_pt_id' => ['required', 'integer'],
             ]);
 
             $insert = new Perwalian();
             $insert->lecture_id = $request->lecture_id;
-            $insert->student_id = $request->student_id;
+            $insert->student_pt_id = $request->student_pt_id;
             $insert->save();
             
             DB::commit();
@@ -59,7 +59,7 @@ class PerwalianController extends Controller
         try{
             request()->validate([
                 'lecture_id' => ['required', 'integer'],
-                'student_id' => ['required', 'integer'],
+                'student_pt_id' => ['required', 'integer'],
             ]);
 
             $update = Perwalian::find($id);
@@ -69,7 +69,7 @@ class PerwalianController extends Controller
             
             $update->name = $request->name;
             $update->lecture_id = $request->lecture_id;
-            $update->student_id = $request->student_id;
+            $update->student_pt_id = $request->student_pt_id;
             $update->save();
             
             DB::commit();

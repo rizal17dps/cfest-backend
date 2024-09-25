@@ -88,6 +88,15 @@ Route::middleware('check.jwt')->group(function () {
                 Route::put('/{id}', [MahasiswaController::class, 'update'])->name('mahasiswa.update');
                 Route::delete('/{id}', [MahasiswaController::class, 'delete'])->name('mahasiswa.delete');
             });
+
+            Route::prefix('mahasiswa_pt')->group(function () {
+                Route::get('/', [MahasiswaController::class, 'indexMahasiswaPT'])->name('mahasiswa.pt.index');
+                Route::get('/{id}', [MahasiswaController::class, 'getMahasiswaPT'])->name('mahasiswa.pt.get');
+                Route::post('/', [MahasiswaController::class, 'storeMahasiswaPT'])->name('mahasiswa.pt.post');
+                Route::put('/{id}', [MahasiswaController::class, 'updateMahasiswaPT'])->name('mahasiswa.pt.update');
+                Route::delete('/{id}', [MahasiswaController::class, 'deleteMahasiswaPT'])->name('mahasiswa.pt.delete');
+            });
+    
     
             Route::prefix('fakultas')->group(function () {
                 Route::get('/', [FakultasController::class, 'index'])->name('fakultas.index');

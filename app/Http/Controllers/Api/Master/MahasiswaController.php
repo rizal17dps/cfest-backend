@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Api\Master;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use App\Models\Prodi;
 use App\Models\Mahasiswa;
+use App\Models\Universitas;
+use App\Models\MahasiswaPT;
 use App\ResponseFormater;
 
 class MahasiswaController extends Controller
@@ -68,7 +71,6 @@ class MahasiswaController extends Controller
                 'guardian_master_of_education_id' => ['required', 'integer'],
                 'guardian_master_of_work_id' => ['required', 'integer'],
                 'guardian_master_of_income_id' => ['required', 'integer'],
-                'nim' => ['required', 'varchar'],
             ]);
 
             $insert = new Mahasiswa();
@@ -107,7 +109,6 @@ class MahasiswaController extends Controller
             $insert->guardian_master_of_education_id = $request->guardian_master_of_education_id;
             $insert->guardian_master_of_work_id = $request->guardian_master_of_work_id;
             $insert->guardian_master_of_income_id = $request->guardian_master_of_income_id;
-            $insert->nim = $request->nim;
             $insert->save();
             
             DB::commit();
@@ -161,7 +162,6 @@ class MahasiswaController extends Controller
                 'guardian_master_of_education_id' => ['required', 'integer'],
                 'guardian_master_of_work_id' => ['required', 'integer'],
                 'guardian_master_of_income_id' => ['required', 'integer'],
-                'nim' => ['required', 'varchar'],
             ]);
 
             $update = Mahasiswa::find($id);
@@ -204,7 +204,6 @@ class MahasiswaController extends Controller
             $update->guardian_master_of_education_id = $request->guardian_master_of_education_id;
             $update->guardian_master_of_work_id = $request->guardian_master_of_work_id;
             $update->guardian_master_of_income_id = $request->guardian_master_of_income_id;
-            $update->nim = $request->nim;
             $update->save();
             
             DB::commit();
@@ -238,6 +237,122 @@ class MahasiswaController extends Controller
         } catch(\Exception $e) {
             DB::rollback();
             return ResponseFormater::error(400, $e->getMessage(), 'Please check the parameter');
+        }
+    }
+
+    public function storeMahasiswaPT(Request $request){
+        DB::beginTransaction();
+        try{
+            request()->validate([
+                'collage_id' => ['required', 'integer'],
+                'student_id' => ['required', 'integer'],
+                'academic_program_id' => ['required', 'integer'],
+                'nim' => ['required', 'varchar'],
+                'tgl_masuk' => ['required', 'date_format:Y-m-d'],
+                'status_keluar' => ['required', 'string'],
+            ]);
+
+            $insert = new MahasiswaPT();
+            $insert->collage_id = $request->collage_id;
+            $insert->academic_program_id = $request->academic_program_id;
+            $insert->student_id = $request->student_id;
+            $insert->nim = $request->nim;
+            $insert->tgl_masuk = $request->tgl_masuk;
+            $insert->status_keluar = $request->status_keluar;
+            $insert->save();
+            
+            DB::commit();
+
+            return ResponseFormater::success(201, 'Create', 'Success');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            DB::rollback();
+            return ResponseFormater::error(400 ,$e->errors(), 'Please check the parameter');
+        } catch(\Exception $e) {
+            DB::rollback();
+            return ResponseFormater::error(400, $e->getMessage(), 'Please check the parameter');
+        }
+    }
+
+    public function updateMahasiswaPT($id, Request $request){
+        DB::beginTransaction();
+        try{
+            request()->validate([
+                'collage_id' => ['required', 'integer'],
+                'student_id' => ['required', 'integer'],
+                'academic_program_id' => ['required', 'integer'],
+                'nim' => ['required', 'varchar'],
+                'tgl_masuk' => ['required', 'date_format:Y-m-d'],
+                'status_keluar' => ['required', 'string'],
+            ]);
+
+            $update = MahasiswaPT::find($id);
+            if(!$update){
+                return ResponseFormater::success(204);
+            }
+
+            $update->collage_id = $request->collage_id;
+            $update->academic_program_id = $request->academic_program_id;
+            $update->student_id = $request->student_id;
+            $update->nim = $request->nim;
+            $update->tgl_masuk = $request->tgl_masuk;
+            $update->status_keluar = $request->status_keluar;
+            $update->save();
+            
+            DB::commit();
+
+            return ResponseFormater::success(201, 'Create', 'Success');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            DB::rollback();
+            return ResponseFormater::error(400 ,$e->errors(), 'Please check the parameter');
+        } catch(\Exception $e) {
+            DB::rollback();
+            return ResponseFormater::error(400, $e->getMessage(), 'Please check the parameter');
+        }
+    }
+
+    public function deleteMahasiswaPT($id){
+        DB::beginTransaction();
+        try{
+            $update = MahasiswaPT::find($id);
+            if(!$update){
+                return ResponseFormater::success(204);
+            }
+            
+            $update->delete();
+            
+            DB::commit();
+
+            return ResponseFormater::success(201, 'Create', 'Success');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            DB::rollback();
+            return ResponseFormater::error(400 ,$e->errors(), 'Please check the parameter');
+        } catch(\Exception $e) {
+            DB::rollback();
+            return ResponseFormater::error(400, $e->getMessage(), 'Please check the parameter');
+        }
+    }
+
+    public function getMahasiswaPT($id) {
+        $result = MahasiswaPT::find($id);
+        $data = [];
+        if(!$result){
+            return ResponseFormater::success(204);
+        } else {
+            $mahasiswa = Mahasiswa::find($result->student_id);
+            $universitas = Universitas::find($result->collage_id);
+            $prodi = Prodi::find($result->academic_program_id);
+
+            array_push($data, ['mahasiswa_name' => $mahasiswa->name, 'universitas' => $universitas->name, 'program_studi' => $prodi->name]);
+            return ResponseFormater::success(200, $data, 'Success', $result->count());
+        }
+    }
+
+    public function indexMahasiswaPT() {
+        $result = MahasiswaPT::orderBy('id', 'asc')->get();
+        if($result->isEmpty()){
+            return ResponseFormater::success(204);
+        } else {
+            return ResponseFormater::success(200, $result, 'Success', $result->count());
         }
     }
 }

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('tugas_kuliah_data', function (Blueprint $table) {
             $table->id();
             $table->integer('tugas_kuliah_id');
-            $table->integer('student_id');
+            $table->integer('student_pt_id');
             $table->string('realname');
             $table->string('name');
             $table->timestamps();

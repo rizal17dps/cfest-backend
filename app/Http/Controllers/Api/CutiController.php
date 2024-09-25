@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Cuti;
 use App\Models\Mahasiswa;
+use App\Models\MahasiswaPT;
 use App\ResponseFormater;
 use App\Utils;
 
@@ -30,7 +31,7 @@ class CutiController extends Controller
                 return ResponseFormater::success(204);
             }
 
-            $userId = Mahasiswa::where('nim', $request->nim)->first();
+            $userId = MahasiswaPT::where('nim', $request->nim)->first();
 
             $file = $request->file('file_pendukung');
             $filename = time() . '.' . $file->getClientOriginalExtension();
@@ -39,7 +40,7 @@ class CutiController extends Controller
 
             $insert = new Cuti();
             $insert->prodi_id = $request->prodi_id;
-            $insert->student_id = $userId->id;
+            $insert->student_pt_id = $userId->id;
             $insert->semester_id = $request->periode;
             $insert->alasan = $request->alasan;
             $insert->realname = $file->getClientOriginalName();

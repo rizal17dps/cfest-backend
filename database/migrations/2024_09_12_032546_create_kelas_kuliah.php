@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('kelas_kuliah', function (Blueprint $table) {
             $table->id();
             $table->integer('course_id');
-            $table->integer('student_id');
+            $table->integer('student_pt_id');
             $table->integer('status')->default(1);
             $table->timestamps();
         });

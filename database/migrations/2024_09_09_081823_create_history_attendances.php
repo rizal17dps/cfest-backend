@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('history_attendances', function (Blueprint $table) {
             $table->id();
             $table->integer('schedule_id');
-            $table->integer('student_id');
+            $table->integer('student_pt_id');
             $table->dateTime('presensi_at');
             $table->boolean('status')->default(1);
             $table->timestamps();

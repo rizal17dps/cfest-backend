@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('krs', function (Blueprint $table) {
             $table->id();
             $table->integer('course_schedule_id');
-            $table->integer('student_id');
+            $table->integer('student_pt_id');
             $table->integer('lecturer_id');
             $table->integer('status');
             $table->integer('approved_by')->nullable();

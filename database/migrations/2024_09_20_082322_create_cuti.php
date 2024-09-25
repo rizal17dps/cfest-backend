@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('cuti', function (Blueprint $table) {
             $table->id();
             $table->integer('prodi_id');
-            $table->integer('student_id');
+            $table->integer('student_pt_id');
             $table->integer('semester_id');
             $table->string('alasan');
             $table->string('realname');

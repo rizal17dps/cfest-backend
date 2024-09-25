@@ -34,13 +34,13 @@ class MappingMahasiswaController extends Controller
         try{
             request()->validate([
                 'academic_program_id' => ['required', 'integer'],
-                'student_id' => ['required', 'string'],
+                'student_pt_id' => ['required', 'integer'],
                 'status' => ['required', 'integer'],
             ]);
 
             $insert = new MappingMahasiswa();
             $insert->academic_program_id = $request->academic_program_id;
-            $insert->student_id = $request->student_id;
+            $insert->student_pt_id = $request->student_pt_id;
             $insert->status = $request->status;
             $insert->save();
             
@@ -61,7 +61,7 @@ class MappingMahasiswaController extends Controller
         try{
             request()->validate([
                 'academic_program_id' => ['required', 'integer'],
-                'student_id' => ['required', 'string'],
+                'student_pt_id' => ['required', 'integer'],
                 'status' => ['required', 'integer'],
             ]);
 
@@ -70,7 +70,7 @@ class MappingMahasiswaController extends Controller
                 return ResponseFormater::success(204);
             }
             $update->academic_program_id = $request->academic_program_id;
-            $update->student_id = $request->student_id;
+            $update->student_pt_id = $request->student_pt_id;
             $update->status = $request->status;
             $update->save();
             
