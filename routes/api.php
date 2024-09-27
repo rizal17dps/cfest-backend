@@ -182,7 +182,7 @@ Route::middleware('check.jwt')->group(function () {
             Route::get('/pay', [KrsController::class, 'pay'])->name('krs.pay');
         });
 
-        Route::prefix('krs')->group(function () {
+        Route::prefix('kprs')->group(function () {
             Route::post('/selected', [KprsController::class, 'selected'])->name('krs.selected');
             Route::post('/submit', [KprsController::class, 'submit'])->name('krs.submit');
             Route::get('/nim/{nim}', [KprsController::class, 'get'])->name('krs.nim');
@@ -227,6 +227,7 @@ Route::middleware('check.jwt')->group(function () {
 
         Route::prefix('nilai')->group(function () {
             Route::get('/view_nim/{course_id}/{nim}', [NilaiController::class, 'viewByNim'])->name('nilai.view.nim');
+            Route::post('/', [NilaiController::class, 'createNilai'])->name('post.nilai.dosen');
         });
     });
 });

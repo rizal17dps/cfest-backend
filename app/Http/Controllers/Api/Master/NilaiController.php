@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Nilai;
 use App\Models\Grading;
 use App\Models\Mahasiswa;
+use App\Models\MahasiswaPT;
 use App\Models\KelasKuliah;
 use App\Models\KomponenNilai;
 
@@ -150,7 +151,7 @@ class NilaiController extends Controller
             request()->validate([
                 'collage_id' => ['required', 'integer'],
                 'jadwal_id' => ['required', 'integer'],
-                'student_id' => ['required', 'integer'],
+                'student_pt_id' => ['required', 'integer'],
                 'tugas' => ['required', 'integer'],
                 'presentasi' => ['required', 'integer'],
                 'quiz' => ['required', 'integer'],
@@ -189,7 +190,7 @@ class NilaiController extends Controller
             }
 
             $insert->course_id = $request->jadwal_id;
-            $insert->student_id = $request->student_id;
+            $insert->student_pt_id = $request->student_pt_id;
             $insert->tugas = $nilaiTugas;
             $insert->presentasi = $nilaiPresentasi;
             $insert->quiz = $nilaiQuiz;
@@ -238,8 +239,8 @@ class NilaiController extends Controller
     }
 
     public function viewByNim($course_id, $nim) {
-        $userId = Mahasiswa::where('nim', $nim)->first();
-        $result = Nilai::where('student_id', $userId->id)->where('course_id', $course_id)->first();
+        $userId = MahasiswaPT::where('nim', $nim)->first();
+        $result = Nilai::where('student_pt_id', $userId->id)->where('course_id', $course_id)->first();
         if (!$result) {
             return ResponseFormater::success(204);
         } else {
