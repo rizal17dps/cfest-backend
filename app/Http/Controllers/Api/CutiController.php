@@ -34,7 +34,7 @@ class CutiController extends Controller
             $userId = MahasiswaPT::where('nim', $request->nim)->first();
 
             $file = $request->file('file_pendukung');
-            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $filename = time() . "-" . $request->nim . '.' . $file->getClientOriginalExtension();
 
             $filePath = 'cuti/' . $userId->id . '/' . $filename;
 

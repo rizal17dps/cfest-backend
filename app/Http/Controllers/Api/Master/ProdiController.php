@@ -35,6 +35,7 @@ class ProdiController extends Controller
             request()->validate([
                 'name' => ['required', 'string'],
                 'faculty_id' => ['required', 'integer'], // tidak required
+                'collage_id' => ['required', 'integer'],
                 'code' => ['required', 'string'],
                 'status' => ['required', 'boolean'],
                 'master_of_education_id' => ['required', 'integer'],
@@ -43,6 +44,7 @@ class ProdiController extends Controller
             $insert = new Prodi();
             $insert->name = $request->name;
             $insert->faculty_id = $request->faculty_id;
+            $insert->collage_id = $request->collage_id;
             $insert->code = $request->code;
             $insert->status = $request->status;
             $insert->master_of_education_id = $request->master_of_education_id;
@@ -66,6 +68,7 @@ class ProdiController extends Controller
             request()->validate([
                 'name' => ['required', 'string'],
                 'faculty_id' => ['required', 'integer'],
+                'collage_id' => ['required', 'integer'],
                 'code' => ['required', 'string'],
                 'status' => ['required', 'boolean'],
                 'master_of_education_id' => ['required', 'integer'],
@@ -78,6 +81,7 @@ class ProdiController extends Controller
             
             $update->name = $request->name;
             $update->faculty_id = $request->faculty_id;
+            $update->collage_id = $request->collage_id;
             $update->code = $request->code;
             $update->status = $request->status;
             $update->master_of_education_id = $request->master_of_education_id;

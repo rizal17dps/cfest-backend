@@ -196,6 +196,7 @@ Route::middleware('check.jwt')->group(function () {
         
         Route::prefix('tugas')->group(function () {
             Route::post('/upload', [TugasControler::class, 'uploadTask'])->name('tugas.upload');
+            Route::post('/akhir/upload', [TugasControler::class, 'createTugasAkhir'])->name('tugas.akhir.upload');
         });
 
         Route::prefix('cuti')->group(function () {

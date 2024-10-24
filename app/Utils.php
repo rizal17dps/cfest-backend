@@ -2,6 +2,7 @@
 
 namespace App;
 use App\Models\User;
+use App\Models\Prodi;
 /**
  * Format response.
  */
@@ -31,6 +32,15 @@ class Utils
         }
         
         return true;
+    }
+
+    public function cekUnivByPrody($prody, $univ){
+        $find = Prodi::where('id', $prody)->where('collage_id', $univ)->first();
+        if($find){
+            return true;
+        } else {
+            return false;
+        }
     }
     
 }
